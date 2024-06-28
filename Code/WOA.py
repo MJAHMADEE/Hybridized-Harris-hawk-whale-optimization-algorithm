@@ -34,7 +34,7 @@ def load_data():
             row = numpy.array(row,dtype = float)
             data_inputs.append(row)
     data_outputs = []
-    with open('datasets/label_blood.csv','r') as csvfile:
+    with open('/content/Hybridized-Harris-hawk-whale-optimization-algorithm/Data Sets/blood.csv','r') as csvfile:
         rows = csv.reader(csvfile)
         for row in rows:
             row = numpy.array(row,dtype = float)
