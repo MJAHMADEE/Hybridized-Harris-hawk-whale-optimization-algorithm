@@ -1,11 +1,14 @@
 import numpy as np
-import csv
-from sklearn.model_selection import train_test_split
-import ANN
-import SSA
 import genetic as ga
-import math
+import ANN
+import csv
+import Neural_network as neural
+import random
+from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+import SSA
+import time
+import math
 
 def best(fitness):
     max_fitness = 0
@@ -37,11 +40,24 @@ def load_data():
             data_outputs.append(row)
     return data_inputs, data_outputs
 
+def update_WOA1(parent, agent, C, A):
+    parent = np.array(parent)
+    agent = np.array(agent)
+    return parent - A * abs(C * agent - parent)
+
+def update_WOA3(agent, parent, C, l):
+    agent = np.array(agent)
+    parent = np.array(parent)
+    b = 1  # typically a constant in WOA
+    D1 = abs(C * agent - parent)
+    return D1 * np.exp(b * l) * np.cos(l * 2 * np.pi) + agent
+
 data_inputs, data_outputs = load_data()
 minmax = ANN.dataset_minmax(data_inputs)
 ANN.normalize_dataset(data_inputs, minmax)
 
 data_inputs = np.array(data_inputs)
+print(data_inputs.shape)
 data_outputs = np.array(data_outputs)
 data_inputs, X, data_outputs, y = train_test_split(data_inputs, data_outputs, test_size=0.2, random_state=1)
 
@@ -65,8 +81,6 @@ for curr_sol in np.arange(0, sol_per_pop):
     initial_pop_weights.append([input_HL1_weights, HL1_HL2_weights, HL2_output_weights])
 
 pop_weights_mat = np.array(initial_pop_weights, dtype=object)
-
-# Flatten the weight matrices to create a population vector
 pop_weights_vector = np.array([np.concatenate([w.flatten() for w in weights]) for weights in pop_weights_mat])
 
 mean_finess = []
@@ -116,10 +130,6 @@ for generation in range(100):
 plt.plot(mean_finess)
 plt.show()
 
-# Debugging: print shapes before conversion
-print(f"Shape of pop_weights_vector: {pop_weights_vector.shape}")
-print(f"Shape of pop_weights_mat[0]: {[w.shape for w in pop_weights_mat[0]]}")
-
 # Custom vector_to_mat function to match expected shapes
 def custom_vector_to_mat(vector, weight_shapes):
     mat = []
@@ -130,13 +140,6 @@ def custom_vector_to_mat(vector, weight_shapes):
         start += size
     return mat
 
-def update_WOA3(agent, parent, C, l):
-    # Your implementation here
-    # Example implementation (to be replaced with actual logic)
-    updated_agent = agent + C * l * (parent - agent)
-    return updated_agent
-
-# Convert the population vector back to matrix form for each individual
 pop_weights_mat = [custom_vector_to_mat(vector, [w.shape for w in pop_weights_mat[0]]) for vector in pop_weights_vector]
 best_weights = pop_weights_mat[0]
 
