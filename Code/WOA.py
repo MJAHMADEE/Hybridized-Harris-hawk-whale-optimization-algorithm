@@ -41,13 +41,13 @@ def load_data():
     return data_inputs, data_outputs
 
 def update_WOA1(parent, agent, C, A):
-    parent = np.array(parent)
-    agent = np.array(agent)
+    parent = np.concatenate([np.array(p).flatten() for p in parent])
+    agent = np.concatenate([np.array(a).flatten() for a in agent])
     return parent - A * abs(C * agent - parent)
 
 def update_WOA3(agent, parent, C, l):
-    agent = np.array(agent)
-    parent = np.array(parent)
+    agent = np.concatenate([np.array(a).flatten() for a in agent])
+    parent = np.concatenate([np.array(p).flatten() for p in parent])
     b = 1  # typically a constant in WOA
     D1 = abs(C * agent - parent)
     return D1 * np.exp(b * l) * np.cos(l * 2 * np.pi) + agent
