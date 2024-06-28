@@ -32,14 +32,14 @@ def load_csv(filename):
 
 def load_data():
     data_inputs = []
-    with open('datasets/banknote_authentication.csv','r') as csvfile:
+    with open('/content/Hybridized-Harris-hawk-whale-optimization-algorithm/Data Sets/banknote_authentication.csv','r') as csvfile:
         rows = csv.reader(csvfile)
         for row in rows:
             row = numpy.array(row,dtype = float)
             data_inputs.append(row)
     return data_inputs
 
-filename = 'datasets/banknote_authentication.csv'
+filename = '/content/Hybridized-Harris-hawk-whale-optimization-algorithm/Data Sets/banknote_authentication.csv'
 dataset = load_csv(filename)        #checked
 random.shuffle(dataset)				#checked
 random.shuffle(dataset)
