@@ -51,7 +51,32 @@ def update_WOA3(agent, parent, C, l):
     b = 1  # typically a constant in WOA
     D1 = abs(C * agent - parent)
     return D1 * np.exp(b * l) * np.cos(l * 2 * np.pi) + agent
+# def flatten_and_concatenate(items):
+#     flattened_items = []
+#     for item in items:
+#         if isinstance(item, dict):
+#             # If item is a dictionary, extract its values and flatten them
+#             values = list(item.values())
+#             flattened_items.extend(np.array(values, dtype=float).flatten())
+#         elif isinstance(item, (list, np.ndarray)):
+#             # Flatten lists and arrays
+#             flattened_items.extend(np.array(item, dtype=float).flatten())
+#         else:
+#             # Convert single elements to float and add them to the list
+#             flattened_items.append(float(item))
+#     return np.array(flattened_items, dtype=float)
 
+# def update_WOA1(parent, agent, C, A):
+#     parent = flatten_and_concatenate(parent)
+#     agent = flatten_and_concatenate(agent)
+#     return parent - float(A) * abs(float(C) * agent - parent)
+
+# def update_WOA3(agent, parent, C, l):
+#     agent = flatten_and_concatenate(agent)
+#     parent = flatten_and_concatenate(parent)
+#     b = 1  # typically a constant in WOA
+#     D1 = abs(float(C) * agent - parent)
+#     return D1 * np.exp(b * l) * np.cos(l * 2 * np.pi) + agent
 data_inputs, data_outputs = load_data()
 minmax = ANN.dataset_minmax(data_inputs)
 ANN.normalize_dataset(data_inputs, minmax)
