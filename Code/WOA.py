@@ -66,6 +66,9 @@ for curr_sol in np.arange(0, sol_per_pop):
 
 pop_weights_mat = np.array(initial_pop_weights, dtype=object)
 
+# Flatten the weight matrices to create a population vector
+pop_weights_vector = np.array([np.concatenate([w.flatten() for w in weights]) for weights in pop_weights_mat])
+
 mean_finess = []
 best_outputs = []
 accuracies = {}
@@ -93,7 +96,7 @@ for generation in range(100):
 
 for generation in range(100):
     print("Generation : ", generation)
-    pop_weights_mat = ga.vector_to_mat(pop_weights_vector, pop_weights_mat)
+    pop_weights_vector = np.array([np.concatenate([w.flatten() for w in weights]) for weights in pop_weights_mat])
 
     fitness = ANN.fitness(pop_weights_mat, data_inputs, data_outputs, activation="sigmoid")
     mean_finess.append(Calculate_mean(fitness))
@@ -112,8 +115,30 @@ for generation in range(100):
 
 plt.plot(mean_finess)
 plt.show()
-pop_weights_mat = ga.vector_to_mat(pop_weights_vector, pop_weights_mat)
-best_weights = pop_weights_mat[0, :]
+
+# Debugging: print shapes before conversion
+print(f"Shape of pop_weights_vector: {pop_weights_vector.shape}")
+print(f"Shape of pop_weights_mat[0]: {[w.shape for w in pop_weights_mat[0]]}")
+
+# Custom vector_to_mat function to match expected shapes
+def custom_vector_to_mat(vector, weight_shapes):
+    mat = []
+    start = 0
+    for shape in weight_shapes:
+        size = np.prod(shape)
+        mat.append(vector[start:start + size].reshape(shape))
+        start += size
+    return mat
+
+def update_WOA3(agent, parent, C, l):
+    # Your implementation here
+    # Example implementation (to be replaced with actual logic)
+    updated_agent = agent + C * l * (parent - agent)
+    return updated_agent
+
+# Convert the population vector back to matrix form for each individual
+pop_weights_mat = [custom_vector_to_mat(vector, [w.shape for w in pop_weights_mat[0]]) for vector in pop_weights_vector]
+best_weights = pop_weights_mat[0]
 
 acc, predictions = ANN.predict_outputs(best_weights, X, y, activation="sigmoid")
 print(acc)
